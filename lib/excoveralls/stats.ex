@@ -34,8 +34,13 @@ defmodule ExCoveralls.Stats do
 
   defp add_counts(module_hash, module, line, count) do
     path = Cover.module_path(module)
-    count_hash = HashDict.get(module_hash, path, HashDict.new)
-    HashDict.put(module_hash, path, HashDict.put(count_hash, line, count))
+    if path == "nofile" do
+      IO.puts "nofile for module: #{inspect module}"
+      module_hash
+    else
+      count_hash = HashDict.get(module_hash, path, HashDict.new)
+      HashDict.put(module_hash, path, HashDict.put(count_hash, line, count))
+    end
   end
 
   @doc """
@@ -91,7 +96,6 @@ defmodule ExCoveralls.Stats do
   Wrapper for reading the specified file.
   """
   def read_source(file_path) do
-    IO.puts file_path
     ExCoveralls.PathReader.expand_path(file_path) |> File.read! |> trim_empty_prefix_and_suffix
   end
 
