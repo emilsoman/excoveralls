@@ -12,7 +12,7 @@ defmodule ExCoveralls.Travis do
     JSX.encode!([
       service_job_id: get_job_id,
       service_name: "travis-pro",
-      repo_token: Application.get_env :excoveralls, :repo_token
+      repo_token: Application.get_env(:excoveralls, :repo_token),
       source_files: stats
     ])
   end
