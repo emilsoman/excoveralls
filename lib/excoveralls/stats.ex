@@ -91,6 +91,7 @@ defmodule ExCoveralls.Stats do
   Wrapper for reading the specified file.
   """
   def read_source(file_path) do
+    IO.puts file_path
     ExCoveralls.PathReader.expand_path(file_path) |> File.read! |> trim_empty_prefix_and_suffix
   end
 
