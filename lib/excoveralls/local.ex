@@ -3,10 +3,11 @@ defmodule ExCoveralls.Local do
   Locally displays the result to screen.
   """
 
-  @doc """
-  Stores count information for calculating coverage values.
-  """
   defmodule Count do
+    @moduledoc """
+    Stores count information for calculating coverage values.
+    """
+
     defstruct lines: 0, relevant: 0, covered: 0
   end
 
@@ -14,14 +15,13 @@ defmodule ExCoveralls.Local do
   Provides an entry point for the module.
   """
   def execute(stats, options \\ []) do
-    IO.puts "----------------"
-    IO.puts print_string("~-6s ~-40s ~8s ~8s ~8s", ["COV", "FILE", "LINES", "RELEVANT", "MISSED"])
-    coverage(stats) |> IO.puts
-    IO.puts "----------------"
+    print_summary(stats)
 
     if options[:detail] == true do
-      source(stats, options[:args]) |> IO.puts
+      source(stats, options[:filter]) |> IO.puts
     end
+
+    ExCoveralls.Stats.ensure_minimum_coverage(stats)
   end
 
   @doc """
@@ -39,6 +39,16 @@ defmodule ExCoveralls.Local do
           |> Enum.join("\n")
   end
 
+  @doc """
+  Prints summary statistics for given coverage.
+  """
+  def print_summary(stats) do
+    IO.puts "----------------"
+    IO.puts print_string("~-6s ~-40s ~8s ~8s ~8s", ["COV", "FILE", "LINES", "RELEVANT", "MISSED"])
+    coverage(stats) |> IO.puts
+    IO.puts "----------------"
+  end
+
   defp format_source(stat) do
     "\n\e[33m--------#{stat[:name]}--------\e[m\n" <> colorize(stat)
   end
@@ -46,8 +56,8 @@ defmodule ExCoveralls.Local do
   defp colorize([{:name, _name}, {:source, source}, {:coverage, coverage}]) do
     lines = String.split(source, "\n")
     Enum.zip(lines, coverage)
-      |> Enum.map(&do_colorize/1)
-      |> Enum.join("\n")
+    |> Enum.map(&do_colorize/1)
+    |> Enum.join("\n")
   end
 
   defp do_colorize({line, coverage}) do
@@ -94,7 +104,7 @@ defmodule ExCoveralls.Local do
 
   defp get_coverage(count) do
     case count.relevant do
-      0 -> default_coverage_value
+      0 -> default_coverage_value()
       _ -> (count.covered / count.relevant) * 100
     end
   end

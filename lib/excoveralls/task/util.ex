@@ -5,28 +5,39 @@ defmodule ExCoveralls.Task.Util do
 
   def print_help_message do
     IO.puts """
-Usage: mix coveralls
+Usage: mix coveralls <Options>
   Used to display coverage
 
-  -h (--help)         Show helps for excoveralls mix tasks
+  <Options>
+    -h (--help)         Show helps for excoveralls mix tasks
 
-Usage: mix coveralls.detail [file-name-pattern]
+    Common options across coveralls mix tasks
+
+    -u (--umbrella)     Show overall coverage for umbrella project.
+    -v (--verbose)      Show json string for posting.
+
+Usage: mix coveralls.detail [--filter file-name-pattern]
   Used to display coverage with detail
-  [file-name-pattern] can be used to limit the target files
+  [--filter file-name-pattern] can be used to limit the files to be displayed in detail.
 
-Usage: mix coveralls.travis
-  Used to post coverage from Travis CI server
+Usage: mix coveralls.html
+  Used to display coverage information at the source-code level formatted as an HTML page.
 
-Usage: mix coveralls.post [options] [coveralls-token]
-  Used to post coverage from local server using token
-  [coveralls-token] should be specified here or in COVERALLS_REPO_TOKEN
-  environment variable
+Usage: mix coveralls.travis [--pro]
+  Used to post coverage from Travis CI server.
 
-  -n (--name)         Service name ('VIA' column at coveralls page)
-  -b (--branch)       Branch name ('BRANCH' column at coveralls page)
-  -c (--committer)    Committer name ('COMMITTER' column at coveralls page)
-  -m (--message)      Commit message ('COMMIT' column at coveralls page)
+Usage: mix coveralls.post <Options>
+  Used to post coverage from local server using token.
+  The token should be specified in the argument or in COVERALLS_REPO_TOKEN
+  environment variable.
 
+  <Options>
+    -t (--token)        Repository token ('REPO TOKEN' of coveralls.io)
+    -n (--name)         Service name ('VIA' column at coveralls.io page)
+    -b (--branch)       Branch name ('BRANCH' column at coveralls.io page)
+    -c (--committer)    Committer name ('COMMITTER' column at coveralls.io page)
+    -m (--message)      Commit message ('COMMIT' column at coveralls.io page)
+    -s (--sha)          Commit SHA (required when not using Travis)
 """
   end
 end

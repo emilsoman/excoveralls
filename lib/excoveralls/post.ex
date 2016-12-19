@@ -5,7 +5,11 @@ defmodule ExCoveralls.Post do
   alias ExCoveralls.Poster
 
   def execute(stats, options) do
-    generate_json(stats, options) |> Poster.execute
+    json = generate_json(stats, options)
+    if options[:verbose] do
+      IO.puts JSX.prettify!(json)
+    end
+    Poster.execute(json, options)
   end
 
   def generate_json(source_info, options) do
@@ -20,7 +24,8 @@ defmodule ExCoveralls.Post do
   defp generate_git_info(options) do
     [head: [
        committer_name: options[:committer],
-       message: options[:message]
+       message: options[:message],
+       id: options[:sha]
       ],
       branch: options[:branch]
     ]

@@ -3,13 +3,20 @@ defmodule ExCoveralls.Mixfile do
 
   def project do
     [ app: :excoveralls,
-      version: "0.3.11",
+      version: "0.5.7",
       elixir: "~> 1.0",
-      deps: deps,
-      description: description,
-      package: package,
-      test_coverage: [tool: ExCoveralls]
+      deps: deps(),
+      description: description(),
+      package: package(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: cli_env_for(:test, [
+        "coveralls", "coveralls.detail", "coveralls.html", "coveralls.json", "coveralls.post",
+      ])
     ]
+  end
+
+  defp cli_env_for(env, tasks) do
+    Enum.reduce(tasks, [], fn(key, acc) -> Keyword.put(acc, :"#{key}", env) end)
   end
 
   # Configuration for the OTP application
@@ -21,7 +28,8 @@ defmodule ExCoveralls.Mixfile do
   # { :foobar, "~> 0.1", git: "https://github.com/elixir-lang/foobar.git" }
   def deps do
     [
-      {:mock, github: "parroty/mock", ref: "fix", only: [:dev, :test]},
+      {:mock, "~> 0.1.1", only: :test},
+      {:meck, "~> 0.8.4", only: :test},
       {:exjsx, "~> 3.0"},
       {:hackney, ">= 0.12.0"}
     ]
@@ -34,7 +42,7 @@ defmodule ExCoveralls.Mixfile do
   end
 
   defp package do
-    [ contributors: ["parroty"],
+    [ maintainers: ["parroty"],
       licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/parroty/excoveralls"} ]
   end
